@@ -1,0 +1,33 @@
+# =========================
+# React
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+
+# =========================
+# Laravel
+# =========================
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/storage/*.key
+backend/bootstrap/cache/*.php
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
