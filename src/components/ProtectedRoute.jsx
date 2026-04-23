@@ -1,18 +1,23 @@
-import { Navigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
 
-function ProtectedRoute({ children, role }) {
-  const user = JSON.parse(localStorage.getItem("user"));
+// function ProtectedRoute({ children, role }) {
+//   const user = JSON.parse(localStorage.getItem("user"));
 
-  // not logged in
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
+//   // not logged in
+//   if (!user) {
+//     return <Navigate to="/login" />;
+//   }
 
-  // wrong role
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
-  }
+//   // wrong role
+//   if (role && user.role !== role) {
+//     return <Navigate to="/" />;
+//   }
 
+//   return children;
+// }
+
+// export default ProtectedRoute;
+function ProtectedRoute({ children }) {
   return children;
 }
 

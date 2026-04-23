@@ -1,5 +1,9 @@
 function Navbar() {
-  return <nav>Navbar</nav>;
+  return (
+    <div style={{ background: "black", color: "white", padding: "10px" }}>
+      Navbar
+    </div>
+  );
 }
 
 export default Navbar;
