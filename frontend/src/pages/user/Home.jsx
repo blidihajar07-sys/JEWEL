@@ -1,10 +1,11 @@
-import Navbar from "../components/Navbar";
+import UserLayout from "../../components/layouts/UserLayout";
 
 function Home() {
   return (
-    <>
-      <Navbar />
+    <UserLayout>
       <h1>Home</h1>
-    </>
+    </UserLayout>
   );
 }
+
+export default Home;
