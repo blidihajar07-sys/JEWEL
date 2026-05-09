@@ -8,7 +8,7 @@ function ProtectedRoute({ children, role }) {
     return <Navigate to="/login" />;
   }
 
-  // wrong role
+  // role protection (admin only)
   if (role && user.role !== role) {
     return <Navigate to="/" />;
   }
