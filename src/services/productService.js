@@ -1,13 +1,59 @@
-import { Navigate } from "react-router-dom";
+const API_URL = "http://127.0.0.1:8000/api";
 
-export default function ProtectedRoute({ children, role }) {
-  const user = JSON.parse(localStorage.getItem("user"));
+// GET ALL
+export const getProducts = async () => {
+  const res = await fetch(`${API_URL}/products`);
+  return res.json();
+};
 
-  if (!user) return <Navigate to="/login" />;
+// GET ONE
+export const getProductById = async (id) => {
+  const res = await fetch(`${API_URL}/products/${id}`);
+  return res.json();
+};
 
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
-  }
+// CREATE
+export const createProduct = async (productData) => {
+  const token = localStorage.getItem("token");
 
-  return children;
-}
+  const res = await fetch(`${API_URL}/products`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(productData),
+  });
+
+  return res.json();
+};
+
+// UPDATE
+export const updateProduct = async (id, productData) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(productData),
+  });
+
+  return res.json();
+};
+
+// DELETE
+export const deleteProduct = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.json();
+};

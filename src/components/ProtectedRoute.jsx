@@ -1,23 +1,34 @@
-// import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-// function ProtectedRoute({ children, role }) {
-//   const user = JSON.parse(localStorage.getItem("user"));
+import { Navigate, useLocation } from "react-router-dom";
 
-//   // not logged in
-//   if (!user) {
-//     return <Navigate to="/login" />;
-//   }
+function ProtectedRoute({ children, role }) {
 
-//   // wrong role
-//   if (role && user.role !== role) {
-//     return <Navigate to="/" />;
-//   }
+  const { user, loading } = useAuth();
 
-//   return children;
-// }
+  const location = useLocation();
 
-// export default ProtectedRoute;
-function ProtectedRoute({ children }) {
+  // WAIT until auth finishes loading
+  if (loading) {
+    return <p className="p-6">Loading...</p>;
+  }
+
+  // NOT LOGGED IN
+  if (!user) {
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location.pathname }}
+        replace
+      />
+    );
+  }
+
+  // ROLE PROTECTION
+  if (role && user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
