@@ -1,143 +1,14 @@
-// // import UserLayout from "../../components/layouts/UserLayout";
-// // import { useParams } from "react-router-dom";
-
-// // function ProductDetails() {
-// //   const { id } = useParams();
-
-// //   return (
-// //     <UserLayout>
-// //       <h1>Product Details</h1>
-// //       <p>Product ID: {id}</p>
-
-// //       <button>Add to cart</button>
-// //     </UserLayout>
-// //   );
-// // }
-
-// // export default ProductDetails;
-
-
-// import UserLayout from "../../components/layouts/UserLayout";
-// import { useParams } from "react-router-dom";
-// import { useEffect, useState } from "react";
-// import { getProductById } from "../../services/productService";
-
-// function ProductDetails() {
-//   const { id } = useParams();
-//   const [product, setProduct] = useState(null);
-
-//   useEffect(() => {
-//     getProductById(id).then(setProduct);
-//   }, [id]);
-
-//   if (!product) return <p>Loading...</p>;
-
-//   return (
-//     <UserLayout>
-//       <h1>{product.title}</h1>
-
-//       <img src={product.thumbnail} width="200" />
-
-//       <p>{product.description}</p>
-
-//       <h3>${product.price}</h3>
-
-//       <button>Add to cart</button>
-//     </UserLayout>
-//   );
-// }
-
-// export default ProductDetails;
-
-
-
-// import UserLayout from "../../components/layouts/UserLayout";
-// import { useParams } from "react-router-dom";
-// import { useEffect, useState } from "react";
-// import { getProductById } from "../../services/productService";
-
-// function ProductDetails() {
-//   const { id } = useParams();
-//   const [product, setProduct] = useState(null);
-
-//   useEffect(() => {
-//     getProductById(id).then(setProduct);
-//   }, [id]);
-
-//   if (!product) return <p>Loading...</p>;
-
-//   return (
-//     <UserLayout>
-//       <h1>{product.title}</h1>
-
-//       <img
-//         src={product.image}
-//         alt={product.title}
-//         width="250"
-//       />
-
-//       <p>{product.description}</p>
-
-//       <h3>${product.price}</h3>
-
-//       <button>Add to Cart</button>
-//     </UserLayout>
-//   );
-// }
-
-// export default ProductDetails;
-
-
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import UserLayout from "../../components/layouts/UserLayout";
-// import { getProductById } from "../../services/productService";
-
-// function ProductDetails() {
-//   const { id } = useParams();
-//   const [product, setProduct] = useState(null);
-
-//   useEffect(() => {
-//     const loadProduct = async () => {
-//       const data = await getProductById(id);
-//       setProduct(data);
-//     };
-
-//     loadProduct();
-//   }, [id]);
-
-//   if (!product) return <div>Loading...</div>;
-
-//   return (
-//     <UserLayout>
-//       <h1>{product.title}</h1>
-
-//       <img
-//         src={product.image}
-//         alt={product.title}
-//         style={{ width: "300px" }}
-//       />
-
-//       <p>{product.description}</p>
-
-//       <h2>${product.price}</h2>
-//     </UserLayout>
-//   );
-// }
-
-// export default ProductDetails;
-
-
-
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import UserLayout from "../../components/layouts/UserLayout";
+import { useParams, useNavigate } from "react-router-dom";
 import { getProductById } from "../../services/productService";
-import { useCart } from "../../context/CartContext"; // ✅ IMPORTANT
+import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 function ProductDetails() {
   const { id } = useParams();
-  const { addToCart } = useCart(); // ✅ IMPORTANT
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { user } = useAuth();
 
   const [product, setProduct] = useState(null);
 
@@ -145,27 +16,64 @@ function ProductDetails() {
     getProductById(id).then(setProduct);
   }, [id]);
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) {
+    return <p className="p-6">Loading...</p>;
+  }
+
+  const handleAddToCart = () => {
+    if (!user) {
+      navigate("/login", {
+        state: { from: `/products/${id}` }
+      });
+      return;
+    }
+
+    if (product.stock <= 0) {
+      alert("Out of stock");
+      return;
+    }
+
+    addToCart(product);
+  };
 
   return (
-    <UserLayout>
-      <h1>{product.name}</h1>
+    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-10">
 
-      <img
-        src={`/images/${product.image}`}
-        alt={product.name}
-        width="250"
-      />
+      <div className="rounded-3xl overflow-hidden border border-[#DCEAF4] bg-white">
+        <img
+          src={`/images/${product.image}`}
+          alt={product.name}
+          className="w-full h-[500px] object-cover"
+        />
+      </div>
 
-      <p>{product.description}</p>
+      <div>
+        <h1 className="text-4xl font-bold text-[#384152]">
+          {product.name}
+        </h1>
 
-      <h3>${product.price}</h3>
+        <p className="mt-4 text-[#384152]/70 leading-relaxed">
+          {product.description}
+        </p>
 
-      {/* ✅ NOW WORKS */}
-      <button onClick={() => addToCart(product)}>
-        Add to Cart
-      </button>
-    </UserLayout>
+        <h3 className="mt-6 text-3xl font-semibold text-[#D4B06A]">
+          {Number(product.price).toFixed(2)} MAD
+        </h3>
+
+        <button
+          onClick={handleAddToCart}
+          disabled={product.stock <= 0}
+          className={`mt-8 px-8 py-3 rounded-2xl text-white ${
+            product.stock <= 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#D4B06A]"
+          }`}
+        >
+          {product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
+        </button>
+      </div>
+
+    </div>
   );
 }
 

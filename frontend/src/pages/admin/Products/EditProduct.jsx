@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import AdminLayout from "../../../components/layouts/AdminLayout";
-
 import {
   getProductById,
   updateProduct,
@@ -56,7 +54,7 @@ function EditProduct() {
   };
 
   return (
-    <AdminLayout>
+    <div>
       <h1>Edit Product</h1>
 
       <form onSubmit={handleSubmit}>
@@ -147,7 +145,7 @@ function EditProduct() {
         </button>
 
       </form>
-    </AdminLayout>
+    </div>
   );
 }
 

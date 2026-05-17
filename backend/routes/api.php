@@ -11,16 +11,23 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 
-Route::post('/products', [ProductController::class, 'store']);
-Route::put('/products/{id}', [ProductController::class, 'update']);
-Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/products', [ProductController::class, 'store']);
+
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+});
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::get('/admin/orders', [OrderController::class, 'allOrders']);
+
     Route::get('/orders', [OrderController::class, 'index']);
 
     Route::post('/orders', [OrderController::class, 'store']);
-
 });

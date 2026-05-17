@@ -1,24 +1,28 @@
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 function AdminLayout({ children }) {
   return (
-    <div style={{ display: "flex" }}>
-      
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FAF7F2]">
 
-      {/* Main area */}
-      <div style={{ flex: 1 }}>
-        <Navbar />
+      {/* TOP NAVBAR */}
+      <Navbar />
 
-        <div style={{ padding: "20px" }}>
+      {/* CONTENT */}
+      <div className="flex">
+
+        {/* SIDEBAR */}
+        <Sidebar />
+
+        {/* MAIN */}
+        <main className="flex-1 p-8">
           {children}
-        </div>
-      </div>
+        </main>
 
+      </div>
     </div>
   );
 }
 
 export default AdminLayout;
+

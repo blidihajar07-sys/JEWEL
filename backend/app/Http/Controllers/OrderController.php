@@ -17,44 +17,62 @@ class OrderController extends Controller
             ->get();
     }
 
+    public function allOrders()
+    {
+        return Order::with('items.product', 'user')
+            ->latest()
+            ->get();
+    }
+
     // CREATE ORDER
     public function store(Request $request)
     {
+        $request->validate([
+          'total_price' => 'required',
+          'shipping_address' => 'required',
+          'phone' => 'required',
+          'payment_method' => 'required',
+          'items' => 'required|array',
+        ]);
 
         $order = Order::create([
-            'user_id' => $request->user()->id,
-
-            'total_price' => $request->total_price,
-
-            'shipping_address' => $request->shipping_address,
-
-            'phone' => $request->phone,
-
-            'payment_method' => $request->payment_method,
-
-            'status' => 'pending',
+          'user_id' => $request->user()->id,
+          'total_price' => $request->total_price,
+          'shipping_address' => $request->shipping_address,
+          'phone' => $request->phone,
+          'payment_method' => $request->payment_method,
+          'status' => 'pending',
         ]);
 
         foreach ($request->items as $item) {
 
-            OrderItem::create([
+          $product = \App\Models\Product::find($item['id']);
 
-                'order_id' => $order->id,
+          if (!$product) continue;
 
-                'product_id' => $item['id'],
+          // ❌ prevent negative stock
+          if ($product->stock < $item['quantity']) {
+            return response()->json([
+                'message' => "Not enough stock for {$product->name}"
+            ], 400);
+          }
 
-                'quantity' => $item['quantity'],
+          // decrease stock
+          $product->stock -= $item['quantity'];
+          $product->save();
 
-                'price' => $item['price'],
-
-                'subtotal' =>
-                    $item['price'] * $item['quantity'],
-            ]);
+          OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $item['id'],
+            'quantity' => $item['quantity'],
+            'price' => $item['price'],
+            'subtotal' => $item['price'] * $item['quantity'],
+          ]);
         }
 
-        return response()->json([
-            'message' => 'Order created',
-            'order' => $order
-        ]);
+      return response()->json([
+        'message' => 'Order created',
+        'order' => $order
+      ]);
     }
-}
+};

@@ -1,112 +1,3 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-// // auth
-// import Login from "../pages/auth/Login";
-// import Register from "../pages/auth/Register";
-
-// // user
-// import Home from "../pages/user/Home";
-// import Products from "../pages/user/Products";
-// import ProductDetails from "../pages/user/ProductDetails";
-// import Cart from "../pages/user/Cart";
-// import Checkout from "../pages/user/Checkout";
-// import Orders from "../pages/user/Orders";
-// import OrderDetails from "../pages/user/OrderDetails";
-
-// // admin
-// import Dashboard from "../pages/admin/Dashboard";
-// import ProductsList from "../pages/admin/Products/ProductsList";
-// import AddProduct from "../pages/admin/Products/AddProduct";
-// import EditProduct from "../pages/admin/Products/EditProduct";
-// import OrdersList from "../pages/admin/Orders/OrdersList";
-// import AdminOrderDetails from "../pages/admin/Orders/OrderDetails";
-
-// // protection
-// import ProtectedRoute from "../components/ProtectedRoute";
-
-// function AppRoutes() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-
-//         {/* auth */}
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/register" element={<Register />} />
-
-//         {/* user */}
-//         <Route path="/" element={<Home />} />
-//         <Route path="/products" element={<Products />} />
-//         <Route path="/products/:id" element={<ProductDetails />} />
-//         <Route path="/cart" element={<Cart />} />
-//         <Route path="/checkout" element={<Checkout />} />
-//         <Route path="/orders" element={<Orders />} />
-//         <Route path="/orders/:id" element={<OrderDetails />} />
-
-//         {/* admin protected */}
-//         <Route
-//           path="/admin"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <Dashboard />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/admin/products"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <ProductsList />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/admin/products/add"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <AddProduct />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/admin/products/edit/:id"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <EditProduct />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/admin/orders"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <OrdersList />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/admin/orders/:id"
-//           element={
-//             <ProtectedRoute role="admin">
-//               <AdminOrderDetails />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default AppRoutes;
-
-
-
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 //auth pages
@@ -130,6 +21,10 @@ import EditProduct from "../pages/admin/Products/EditProduct";
 import OrdersList from "../pages/admin/Orders/OrdersList";
 import AdminOrderDetails from "../pages/admin/Orders/OrderDetails";
 
+//Layout Components
+import UserLayout from "../components/layouts/UserLayout";
+import AdminLayout from "../components/layouts/AdminLayout";
+
 // protection
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -143,14 +38,43 @@ function AppRoutes() {
         
         
         {/* USER */}
-        <Route path="/" element={<Home />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/orderdetails" element={<OrderDetails />} />
-        <Route path="/products" element={<Products />} />
-        {/* <Route path="/ProductDetails" element={<ProductDetails />} /> */}
-        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/" element={<UserLayout> <Home /> </UserLayout>} />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute role="user">
+              <UserLayout>
+                <Checkout />
+              </UserLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute role="user">
+              <UserLayout>
+                <Cart />
+              </UserLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute role="user">
+              <UserLayout>
+                <Orders />
+              </UserLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/orders/:id" element={ <UserLayout> <OrderDetails /> </UserLayout>} />
+        <Route path="/products" element={ <UserLayout> <Products /> </UserLayout>} />
+        <Route path="/products/:id" element={ <UserLayout> <ProductDetails /> </UserLayout>} />
 
         {/* ADMIN (no protection yet) */}
         {/* <Route path="/admin" element={<Dashboard />} />
@@ -166,7 +90,9 @@ function AppRoutes() {
           path="/admin"
           element={
             <ProtectedRoute role="admin">
-              <Dashboard />
+              <AdminLayout>
+                <Dashboard />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
@@ -175,7 +101,9 @@ function AppRoutes() {
           path="/admin/products"
           element={
             <ProtectedRoute role="admin">
-              <ProductsList />
+              <AdminLayout>
+                <ProductsList />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
@@ -184,7 +112,9 @@ function AppRoutes() {
           path="/admin/products/add"
           element={
             <ProtectedRoute role="admin">
-              <AddProduct />
+              <AdminLayout>
+                <AddProduct />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
@@ -193,7 +123,9 @@ function AppRoutes() {
           path="/admin/products/edit/:id"
           element={
             <ProtectedRoute role="admin">
-              <EditProduct />
+              <AdminLayout>
+                <EditProduct />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
@@ -202,7 +134,9 @@ function AppRoutes() {
           path="/admin/orders"
           element={
             <ProtectedRoute role="admin">
-              <OrdersList />
+              <AdminLayout>
+                <OrdersList />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
@@ -211,7 +145,9 @@ function AppRoutes() {
           path="/admin/orders/:id"
           element={
             <ProtectedRoute role="admin">
-              <AdminOrderDetails />
+              <AdminLayout>
+                <AdminOrderDetails />
+              </AdminLayout>
             </ProtectedRoute>
           }
         />
