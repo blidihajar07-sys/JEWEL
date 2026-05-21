@@ -13,6 +13,10 @@ function Checkout() {
     shipping_address: "",
     phone: "",
     payment_method: "Cash on Delivery",
+    card_holder_name: "",
+    card_number: "",
+    expiry_month: "",
+    expiry_year: "",
   });
 
   const handleChange = (e) => {
@@ -37,6 +41,58 @@ const placeOrder = async () => {
     alert("Please fill all fields");
     return;
   }
+// CARD VALIDATION
+if (formData.payment_method === "Card") {
+
+  if (
+    !formData.card_holder_name ||
+    !formData.card_number ||
+    !formData.expiry_month ||
+    !formData.expiry_year
+  ) {
+    alert("Please complete card information");
+    return;
+  }
+
+  const month = Number(formData.expiry_month);
+
+  let year = Number(formData.expiry_year);
+
+  // convert 26 -> 2026
+  if (year < 100) {
+    year += 2000;
+  }
+
+  // invalid month
+  if (month < 1 || month > 12) {
+    alert("Invalid expiry month");
+    return;
+  }
+
+  const currentDate = new Date();
+
+  const currentMonth =
+    currentDate.getMonth() + 1;
+
+  const currentYear =
+    currentDate.getFullYear();
+
+  // expired card
+  if (
+    year < currentYear ||
+    (year === currentYear &&
+      month < currentMonth)
+  ) {
+    alert("This card is expired");
+    return;
+  }
+
+  // basic card number validation
+  if (formData.card_number.length < 12) {
+    alert("Invalid card number");
+    return;
+  }
+}
 
   try {
     const orderData = {
@@ -45,6 +101,11 @@ const placeOrder = async () => {
       shipping_address: formData.shipping_address,
       phone: formData.phone,
       payment_method: formData.payment_method,
+
+       card_holder_name: formData.card_holder_name,
+       card_number: formData.card_number,
+       expiry_month: formData.expiry_month,
+       expiry_year: formData.expiry_year,
     };
 
     const response = await createOrder(orderData);
@@ -138,6 +199,45 @@ const placeOrder = async () => {
               Credit card
             </option>
           </select>
+
+          {formData.payment_method === "Card" && (
+            <div className="space-y-3 mt-4">
+              
+              <input
+               type="text"
+                name="card_holder_name"
+                placeholder="Card holder name"
+                onChange={handleChange}
+                className="w-full border rounded-xl px-4 py-3"
+              />
+
+              <input
+                type="text"
+                name="card_number"
+                placeholder="Card number"
+                onChange={handleChange}
+                className="w-full border rounded-xl px-4 py-3"
+              />
+              
+              <div className="flex gap-3">
+              <input
+                type="text"
+                name="expiry_month"
+                placeholder="MM"
+                onChange={handleChange}
+                className="w-full border rounded-xl px-4 py-3"
+              />
+              <input
+                type="text"
+                name="expiry_year"
+                placeholder="YY"
+                onChange={handleChange}
+                className="w-full border rounded-xl px-4 py-3"
+              />
+            </div>
+            
+          </div>
+)}
 
         </div>
       </div>

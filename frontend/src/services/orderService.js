@@ -49,3 +49,24 @@ export const getAllOrders = async () => {
 
   return res.json();
 };
+
+export const updateOrderStatus = async (id, status) => {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(
+    `${API_URL}/admin/orders/${id}/status`,
+    {
+      method: "PUT",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+
+      body: JSON.stringify({ status }),
+    }
+  );
+
+  return res.json();
+};

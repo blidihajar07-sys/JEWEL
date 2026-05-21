@@ -7,9 +7,12 @@ import {
 } from "../../../services/productService";
 
 function EditProduct() {
+
   const { id } = useParams();
 
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,128 +26,275 @@ function EditProduct() {
     image: "",
   });
 
-  // LOAD PRODUCT
   useEffect(() => {
+
     const loadProduct = async () => {
+
       const data = await getProductById(id);
 
       setFormData(data);
+
+      setLoading(false);
     };
 
     loadProduct();
+
   }, [id]);
 
-  // HANDLE INPUT
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+
   };
 
-  // SAVE
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    await updateProduct(id, formData);
+  e.preventDefault();
 
-    alert("Product updated");
+  if (
+    !formData.name ||
+    !formData.category ||
+    !formData.price ||
+    !formData.stock ||
+    !formData.material
+  ) {
+    alert("Please fill all required fields");
+    return;
+  }
 
-    navigate("/admin/products");
-  };
+  await updateProduct(id, formData);
+
+  alert("Product updated successfully");
+
+  navigate("/admin/products");
+
+};
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div>
-      <h1>Edit Product</h1>
+    <div className="max-w-5xl">
 
-      <form onSubmit={handleSubmit}>
+      {/* HEADER */}
+      <div className="mb-10">
 
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Name"
-        />
+        <h1 className="text-4xl font-bold text-[#384152]">
+          Edit Product
+        </h1>
 
-        <br />
+        <p className="text-[#384152]/60 mt-2">
+          Update jewelry product information
+        </p>
 
-        <input
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          placeholder="Category"
-        />
+      </div>
 
-        <br />
+      {/* FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border border-[#EFE3C8] rounded-3xl p-8 shadow-sm"
+      >
 
-        <input
-          name="price"
-          value={formData.price}
-          onChange={handleChange}
-          placeholder="Price"
-        />
+        <div className="grid md:grid-cols-2 gap-6">
 
-        <br />
+          {/* NAME */}
+          <div>
 
-        <input
-          name="stock"
-          value={formData.stock}
-          onChange={handleChange}
-          placeholder="Stock"
-        />
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Product Name
+            </label>
 
-        <br />
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
 
-        <input
-          name="material"
-          value={formData.material}
-          onChange={handleChange}
-          placeholder="Material"
-        />
+          </div>
 
-        <br />
+          {/* CATEGORY */}
+          <div>
 
-        <input
-          name="carat"
-          value={formData.carat || ""}
-          onChange={handleChange}
-          placeholder="Carat"
-        />
+            <select
+             name="category"
+             value={formData.category}
+             onChange={handleChange}
+             className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            >
+              <option value="">Select category</option>
+              
+              <option value="ring">Ring</option>
+              <option value="necklace">Necklace</option>
+              <option value="bracelet">Bracelet</option>
+              <option value="earrings">Earrings</option>
+            </select>
 
-        <br />
+          </div>
 
-        <input
-          name="clarity"
-          value={formData.clarity || ""}
-          onChange={handleChange}
-          placeholder="Clarity"
-        />
+          {/* PRICE */}
+          <div>
 
-        <br />
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Price
+            </label>
 
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-        />
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
 
-        <br />
+          </div>
 
-        <input
-          name="image"
-          value={formData.image}
-          onChange={handleChange}
-          placeholder="/images/image.jpg"
-        />
+          {/* STOCK */}
+          <div>
 
-        <br />
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Stock
+            </label>
 
-        <button type="submit">
+            <input
+              type="number"
+              name="stock"
+              value={formData.stock}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
+
+          </div>
+
+          {/* MATERIAL */}
+          <div>
+
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Material
+            </label>
+
+            <select
+             name="material"
+             value={formData.material || ""}
+             onChange={handleChange}
+             className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            >
+             <option value="">Select material</option>
+             <option value="gold">Gold</option>
+             <option value="silver">Silver</option>
+             <option value="platinum">Platinum</option>
+            </select>
+
+          </div>
+
+          {/* CARAT */}
+          <div>
+
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Carat
+            </label>
+
+            <input
+              type="text"
+              name="carat"
+              value={formData.carat || ""}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
+
+          </div>
+
+          {/* CLARITY */}
+          <div>
+
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Clarity
+            </label>
+
+            <input
+              type="text"
+              name="clarity"
+              value={formData.clarity || ""}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
+
+          </div>
+
+          {/* IMAGE */}
+          <div>
+
+            <label className="block mb-2 text-sm font-medium text-[#384152]">
+              Image Filename
+            </label>
+
+            <input
+              type="text"
+              name="image"
+              value={formData.image}
+              onChange={handleChange}
+              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+            />
+
+          </div>
+
+        </div>
+
+        {/* DESCRIPTION */}
+        <div className="mt-6">
+
+          <label className="block mb-2 text-sm font-medium text-[#384152]">
+            Description
+          </label>
+
+          <textarea
+            name="description"
+            rows="5"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 resize-none outline-none focus:border-[#D4B06A]"
+          />
+
+        </div>
+
+        {/* PREVIEW */}
+        {formData.image && (
+
+          <div className="mt-8">
+
+            <p className="mb-3 text-sm font-medium text-[#384152]">
+              Image Preview
+            </p>
+
+            <div className="w-64 h-64 bg-[#FAF7F2] border border-[#EFE3C8] rounded-3xl overflow-hidden">
+
+              <img
+                src={`/images/${formData.image}`}
+                alt={formData.name}
+                className="w-full h-full object-cover"
+              />
+
+            </div>
+
+          </div>
+
+        )}
+
+        {/* BUTTON */}
+        <button
+          type="submit"
+          className="mt-8 px-8 py-3 rounded-2xl bg-[#D4B06A] text-white"
+        >
           Save Changes
         </button>
 
       </form>
+
     </div>
   );
 }

@@ -7,24 +7,45 @@ import {
   Eye
 } from "lucide-react";
 
+import { useEffect, useState } from "react";
+
+import { getDashboardStats } from "../../services/dashboardService";
+
 function Dashboard() {
 
-  const stats = [
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+
+    const loadDashboard = async () => {
+      const data = await getDashboardStats();
+      setStats(data);
+    };
+
+    loadDashboard();
+
+  }, []);
+
+  if (!stats) {
+    return <p>Loading...</p>;
+  }
+
+  const cards = [
     {
       title: "Products",
-      value: "16",
+      value: stats.products,
       icon: <ShoppingBag size={22} />,
     },
 
     {
       title: "Orders",
-      value: "8",
+      value: stats.orders,
       icon: <Package size={22} />,
     },
 
     {
       title: "Revenue",
-      value: "14,500 MAD",
+      value: `${Number(stats.revenue).toFixed(2)} MAD`,
       icon: <CircleDollarSign size={22} />,
     },
   ];
@@ -48,7 +69,7 @@ function Dashboard() {
       {/* STATS */}
       <div className="grid md:grid-cols-3 gap-6">
 
-        {stats.map((stat) => (
+        {cards.map((stat) => (
           <div
             key={stat.title}
             className="bg-white border border-[#EFE3C8] rounded-3xl p-6 shadow-sm"
@@ -57,6 +78,7 @@ function Dashboard() {
             <div className="flex items-center justify-between">
 
               <div>
+
                 <p className="text-sm text-[#384152]/60">
                   {stat.title}
                 </p>
@@ -64,6 +86,7 @@ function Dashboard() {
                 <h2 className="text-3xl font-bold text-[#384152] mt-2">
                   {stat.value}
                 </h2>
+
               </div>
 
               <div className="bg-[#F3E7CF] p-4 rounded-2xl text-[#D4B06A]">
@@ -107,6 +130,54 @@ function Dashboard() {
             <Eye size={18} />
             View Store
           </Link>
+
+        </div>
+
+      </div>
+
+      {/* LATEST ORDERS */}
+      <div className="mt-10 bg-white border border-[#EFE3C8] rounded-3xl p-6">
+
+        <h2 className="text-2xl font-semibold text-[#384152] mb-6">
+          Latest Orders
+        </h2>
+
+        <div className="space-y-4">
+
+          {stats.latestOrders.map((order) => (
+
+            <div
+              key={order.id}
+              className="flex items-center justify-between border-b pb-4"
+            >
+
+              <div>
+
+                <h3 className="font-semibold text-[#384152]">
+                  Order #{order.id}
+                </h3>
+
+                <p className="text-sm text-[#384152]/60">
+                  {order.user?.name}
+                </p>
+
+              </div>
+
+              <div className="text-right">
+
+                <p className="font-semibold text-[#D4B06A]">
+                  {Number(order.total_price).toFixed(2)} MAD
+                </p>
+
+                <p className="text-sm text-[#384152]/60">
+                  {order.status}
+                </p>
+
+              </div>
+
+            </div>
+
+          ))}
 
         </div>
 

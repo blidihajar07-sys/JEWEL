@@ -1,175 +1,258 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
+import axios from "axios";
+
+import ProductCard from "../../components/product/ProductCard";
+
+import {
+  categories,
+  filterByCategory,
+  searchProducts,
+} from "../../utils/productUtils";
 
 function Home() {
+  const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/products");
+
+        setProducts(
+          [...res.data]
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 6)
+        );
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const categoryFiltered = filterByCategory(
+  products,
+  selectedCategory
+);
+
+const filteredProducts = searchProducts(
+  categoryFiltered,
+  searchTerm
+);
   return (
-    //1
-    // <div className="text-center space-y-6">
-    //   <h1 className="text-4xl font-bold text-[#384152]">
-    //     Welcome to Serene Spark
-    //   </h1>
+    <div className="min-h-screen bg-[#FAF7F2]">
 
-    //   <p className="text-gray-600 max-w-xl mx-auto">
-    //     Elegant jewelry crafted with simplicity and modern design.
-    //   </p>
-
-    //   <Link to="/products">
-    //     <button className="px-6 py-3 bg-[#D4B06A] text-white rounded-full hover:opacity-90 transition">
-    //     Shop Now
-    //   </button>
-    //   </Link>
-    // </div>
-
-
-
-    //2
-    <div className="min-h-screen">
-      
       {/* HERO */}
-      <section className="bg-gradient-to-r from-[#DCEAF4] via-[#F3DDE5] to-[#FAF7F2] py-16 px-6 text-center">
-        <h1 className="text-4xl font-bold text-[#384152]">
-          Timeless Jewelry Collection
-        </h1>
-        
-        <p className="mt-3 text-[#384152]/70">
-          Soft elegance inspired by modern femininity
-        </p>
-        
-        <Link to="/products">
-          <button className="mt-6 bg-[#D4B06A] text-white px-6 py-2 rounded-xl hover:opacity-90">
-            Shop Now
-          </button>
-        </Link>
-      </section>
-      
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center justify-center px-6">
 
-      {/* PRODUCTS GRID */}
-      <section className="px-6 py-10">
-        <h2 className="text-xl font-semibold text-[#384152] mb-6">
-          Featured Products
-        </h2>
+        {/* animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#DCEAF4] via-[#F3DDE5] to-[#FAF7F2]" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* your ProductCard components here */}
+        {/* glow effects */}
+        <div className="absolute -top-20 -left-20 w-72 h-72 bg-[#D4B06A]/20 rounded-full blur-3xl animate-pulse" />
+
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F3DDE5]/40 rounded-full blur-3xl animate-pulse" />
+
+        {/* floating jewelry circles */}
+        <div className="absolute top-32 left-20 hidden lg:block w-24 h-24 rounded-full border border-[#D4B06A]/30 animate-bounce" />
+
+        <div className="absolute bottom-32 right-24 hidden lg:block w-16 h-16 rounded-full border border-[#384152]/20 animate-bounce delay-300" />
+
+        {/* content */}
+        <div className="relative max-w-4xl text-center z-10">
+
+          <p className="text-sm uppercase tracking-[0.3em] text-[#384152]/60">
+            Serene Spark Collection
+          </p>
+
+          <h1 className="mt-6 text-5xl md:text-7xl font-bold text-[#384152] leading-tight">
+
+            Jewelry that feels
+
+            <span className="block text-[#D4B06A]">
+              effortless
+            </span>
+
+          </h1>
+
+          <p className="mt-6 text-lg md:text-xl text-[#384152]/70 max-w-2xl mx-auto leading-relaxed">
+            Minimal and timeless jewelry crafted to elevate your natural elegance with softness and confidence.
+          </p>
+
+          {/* buttons */}
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+
+            <Link to="/products">
+              <button className="px-8 py-4 bg-[#D4B06A] text-white rounded-2xl hover:scale-105 hover:shadow-xl transition duration-300">
+                Explore Pieces
+              </button>
+            </Link>
+
+          </div>
+
+          {/* trust line */}
+          <p className="mt-10 text-sm text-[#384152]/50">
+            ✨ Handcrafted • Elegant • Timeless
+          </p>
+
         </div>
       </section>
 
+{/* SEARCH + FILTER SECTION */}
+<section className="max-w-6xl mx-auto px-6">
+
+  {/* SEARCH BAR CARD */}
+  <div className="bg-white/90 backdrop-blur-xl border border-[#EFE3C8] shadow-2xl rounded-[2rem] p-4 md:p-5">
+
+    <div className="flex flex-col lg:flex-row gap-5 items-center">
+
+      {/* SEARCH */}
+      <div className="relative flex-1 w-full">
+
+        <Search
+          size={20}
+          className="absolute left-5 top-1/2 -translate-y-1/2 text-[#384152]/40"
+        />
+
+        <input
+          type="text"
+          placeholder="Search rings, necklaces, bracelets..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="
+            w-full
+            bg-[#FAF7F2]
+            border border-transparent
+            focus:border-[#D4B06A]
+            rounded-2xl
+            pl-14
+            pr-5
+            py-4
+            outline-none
+            text-[#384152]
+            placeholder:text-[#384152]/40
+            transition
+          "
+        />
+
+      </div>
+
+
+    </div>
+  </div>  
+  </section>    
+
+    {/* CATEGORY BUTTONS */}
+    <div className="flex flex-wrap justify-center gap-3 mt-5">
+
+      {/* ALL */}
+      <button
+        onClick={() => setSelectedCategory("all")}
+        className={`px-5 py-2 rounded-full border transition capitalize ${
+          selectedCategory === "all"
+            ? "bg-[#D4B06A] text-white border-[#D4B06A]"
+            : "border-[#D4B06A] text-[#D4B06A] hover:bg-[#D4B06A]/10"
+        }`}
+      >
+        All
+      </button>
+
+      {/* CATEGORIES */}
+      {categories.map((cat) => (
+        <button
+          key={cat}
+          onClick={() => setSelectedCategory(cat)}
+          className={`px-5 py-2 rounded-full border transition capitalize ${
+            selectedCategory === cat
+              ? "bg-[#D4B06A] text-white border-[#D4B06A]"
+              : "border-[#D4B06A] text-[#D4B06A] hover:bg-[#D4B06A]/10"
+          }`}
+        >
+          {cat}
+        </button>
+      ))}
+
     </div>
 
-
-  //3
-  // <div className="min-h-screen bg-[#FAF7F2]">
       
-  //     {/* BLUE HERO SECTION */}
-  //     <section className="bg-[#DCEAF4] py-20 px-6 text-center">
-  //       <h1 className="text-5xl font-bold text-[#384152]">
-  //         Discover Elegance
-  //       </h1>
+      {/* PRODUCTS */}
+      <section className="px-6 pb-20 max-w-6xl mx-auto">
 
-  //       <p className="mt-4 text-[#384152]/70">
-  //         Jewelry designed for soft confidence
-  //       </p>
-  //     </section>
+        <div className="flex justify-between items-center mb-10">
 
-  //     {/* PINK FEATURE STRIP */}
-  //     <section className="bg-[#F3DDE5] py-10 px-6 text-center">
-  //       <h2 className="text-2xl font-semibold text-[#384152]">
-  //         New Spring Collection
-  //       </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-[#384152]">
+              Featured Pieces
+            </h2>
 
-  //       <p className="text-[#384152]/70 mt-2">
-  //         Light tones, golden details, soft textures
-  //       </p>
-  //     </section>
+            <p className="text-[#384152]/60 mt-2">
+              Discover our curated elegant collection
+            </p>
+          </div>
 
-  //     {/* PRODUCTS */}
-  //     <section className="px-6 py-10">
-  //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  //         {/* ProductCard */}
-  //         <Link to="/products">
-  //         <button className="mt-6 bg-[#D4B06A] text-white px-6 py-2 rounded-xl hover:opacity-90">
-  //           Shop Now
-  //         </button>
-  //       </Link>
-  //       </div>
-  //     </section>
+          <Link
+            to="/products"
+            className="text-[#D4B06A] hover:underline"
+          >
+            View all
+          </Link>
 
-  //   </div>
-
-  //4
-  // <div className="min-h-screen bg-gradient-to-br from-[#DCEAF4] via-[#F3DDE5] to-[#FAF7F2]">
-
-  //     {/* HERO GLASS CARD */}
-  //     <section className="flex justify-center items-center py-20 px-6">
-  //       <div className="backdrop-blur-md bg-white/40 border border-white rounded-2xl p-10 text-center shadow-lg max-w-2xl">
-
-  //         <h1 className="text-4xl font-bold text-[#384152]">
-  //           Elegant Jewelry Store
-  //         </h1>
-
-  //         <p className="mt-3 text-[#384152]/70">
-  //           Soft luxury meets modern design
-  //         </p>     
-
-  //         <Link to="/products">
-  //           <button className="mt-6 bg-[#D4B06A] text-white px-6 py-2 rounded-xl hover:scale-105 transition">
-  //             Explore Collection
-  //           </button>
-  //         </Link>
-
-  //       </div>
-  //     </section>
-
-  //     {/* PRODUCTS */}
-  //     <section className="px-6 pb-16">
-  //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  //         {/* ProductCard */}
-  //       </div>
-  //     </section>
-
-  //   </div>
+        </div>
 
 
-  //5
-  //  <div className="bg-[#FAF7F2] min-h-screen">
+        {/* GRID */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-  //     {/* HERO LEFT + IMAGE RIGHT STYLE */}
-  //     <section className="grid md:grid-cols-2 gap-6 p-10 items-center">
+          {filteredProducts.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+            />
+          ))}
 
-  //       <div>
-  //         <h1 className="text-5xl font-bold text-[#384152]">
-  //           Soft Luxury Jewelry
-  //         </h1>
+        </div>
 
-  //         <p className="mt-4 text-[#384152]/70">
-  //           Pink softness, blue calm, golden elegance.
-  //         </p>
+        {/* EMPTY */}
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-20">
 
-  //         <Link to="/products">
-  //           <button className="mt-6 bg-[#D4B06A] text-white px-6 py-2 rounded-xl">
-  //             Shop Now
-  //           </button>
-  //         </Link>
-  //       </div>
+            <h3 className="text-2xl font-semibold text-[#384152]">
+              No products found
+            </h3>
 
-  //       <div className="bg-gradient-to-br from-[#DCEAF4] to-[#F3DDE5] h-80 rounded-2xl"></div>
+            <p className="text-[#384152]/60 mt-2">
+              Try another category
+            </p>
 
-  //     </section>
+          </div>
+        )}
 
-  //     {/* FEATURE BANNER */}
-  //     <section className="bg-[#DCEAF4] py-10 text-center">
-  //       <h2 className="text-xl font-semibold text-[#384152]">
-  //         Handcrafted pieces with meaning
-  //       </h2>
-  //     </section>
+      </section>
 
-  //     {/* PRODUCTS */}
-  //     <section className="px-10 py-10">
-  //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  //         {/* ProductCard */}
-  //       </div>
-  //     </section>
+      {/* BRAND SECTION */}
+      <section className="bg-white border-t border-[#DCEAF4] py-20">
 
-  //   </div>
+        <div className="max-w-4xl mx-auto text-center px-6">
+
+          <h2 className="text-3xl font-bold text-[#384152]">
+            Crafted with intention
+          </h2>
+
+          <p className="mt-5 text-[#384152]/60 leading-relaxed">
+            Every piece is thoughtfully designed to balance elegance,
+            softness, and timeless sophistication.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
   );
 }
 

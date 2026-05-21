@@ -27,14 +27,30 @@ function AddProduct() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    await createProduct(formData);
+  e.preventDefault();
 
-    alert("Product added successfully");
+  if (
+    !formData.name ||
+    !formData.category ||
+    formData.price === "" ||
+    formData.stock === "" ||
+    !formData.material ||
+    !formData.carat ||
+    !formData.clarity ||
+    !formData.description ||
+    !formData.image
+  ) {
+    alert("Fill all required fields");
+    return;
+  }
 
-    navigate("/admin/products");
-  };
+  await createProduct(formData);
+
+  alert("Product added successfully");
+
+  navigate("/admin/products");
+};
 
   return (
     <div className="max-w-5xl">
@@ -77,20 +93,19 @@ function AddProduct() {
           </div>
 
           {/* CATEGORY */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-[#384152]">
-              Category
-            </label>
-
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="Rings"
-              className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
-            />
-          </div>
+          <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
+          >
+            <option value="">Select category</option>
+            
+            <option value="ring">Ring</option>
+            <option value="necklace">Necklace</option>
+            <option value="bracelet">Bracelet</option>
+            <option value="earrings">Earrings</option>
+          </select>
 
           {/* PRICE */}
           <div>
@@ -125,20 +140,18 @@ function AddProduct() {
           </div>
 
           {/* MATERIAL */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-[#384152]">
-              Material
-            </label>
-
-            <input
-              type="text"
+            <select
               name="material"
               value={formData.material}
               onChange={handleChange}
-              placeholder="Gold"
               className="w-full border border-[#EFE3C8] rounded-2xl px-4 py-3 outline-none focus:border-[#D4B06A]"
-            />
-          </div>
+            >
+              <option value="">Select material</option>
+
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+              <option value="platinum">Platinum</option>
+          </select>
 
           {/* CARAT */}
           <div>
