@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
-
 import { Navigate, useLocation } from "react-router-dom";
+
+import Loader from "./ui/Loader";
 
 function ProtectedRoute({ children, role }) {
 
@@ -8,12 +9,12 @@ function ProtectedRoute({ children, role }) {
 
   const location = useLocation();
 
-  // WAIT until auth finishes loading
+  // Wait until authentication finishes loading
   if (loading) {
-    return <p className="p-6">Loading...</p>;
+    return <Loader />;
   }
 
-  // NOT LOGGED IN
+  // Redirect guests to login
   if (!user) {
     return (
       <Navigate
@@ -24,7 +25,7 @@ function ProtectedRoute({ children, role }) {
     );
   }
 
-  // ROLE PROTECTION
+  // Restrict access by role
   if (role && user.role !== role) {
     return <Navigate to="/" replace />;
   }

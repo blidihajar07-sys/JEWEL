@@ -1,16 +1,25 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 
+// Global authentication context
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
 
+  // Prevent route rendering until auth check finishes
   const [loading, setLoading] = useState(true);
 
+  // Restore user session from localStorage
   useEffect(() => {
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser =
+      localStorage.getItem("user");
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -20,19 +29,26 @@ export function AuthProvider({ children }) {
 
   }, []);
 
+  // Store user session after login
   const login = (data) => {
 
-    localStorage.setItem("token", data.token);
+    localStorage.setItem(
+      "token",
+      data.token
+    );
 
-    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
 
     setUser(data.user);
   };
 
+  // Clear session on logout
   const logout = () => {
 
     localStorage.removeItem("token");
-
     localStorage.removeItem("user");
 
     setUser(null);
@@ -44,7 +60,7 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
-        loading
+        loading,
       }}
     >
       {children}
@@ -52,4 +68,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+// Custom hook for authentication access
+export const useAuth = () =>
+  useContext(AuthContext);

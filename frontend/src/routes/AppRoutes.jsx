@@ -72,19 +72,19 @@ function AppRoutes() {
           }
         />
 
-        <Route path="/orders/:id" element={ <UserLayout> <OrderDetails /> </UserLayout>} />
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute role="user">
+              <UserLayout>
+                <OrderDetails />
+              </UserLayout>
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/products" element={ <UserLayout> <Products /> </UserLayout>} />
         <Route path="/products/:id" element={ <UserLayout> <ProductDetails /> </UserLayout>} />
-
-        {/* ADMIN (no protection yet) */}
-        {/* <Route path="/admin" element={<Dashboard />} />
-        <Route path="/admin/products" element={<ProductsList />} />
-        <Route path="/admin/products/add" element={<AddProduct />} />
-        <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-        <Route path="/admin/orders" element={<OrdersList />} />
-        <Route path="/admin/orders/:id" element={<AdminOrderDetails />} /> */}
-
-
         {/* ADMIN */}
         <Route
           path="/admin"

@@ -1,51 +1,5 @@
 @import "tailwindcss";
 
-
-/*1*/
-/* body {
-  background-color: var(--ivory);
-  color: var(--slate);
-  font-family: system-ui, sans-serif;
-} */
-
-
-
-/*2*/
-/* body {
-  background: #FAF7F2;
-  color: #384152;
-  font-family: system-ui, sans-serif;
-}
-
-#root {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, #DCEAF4 0%, transparent 30%),
-    radial-gradient(circle at bottom right, #F3DDE5 0%, transparent 30%);
-} */
-
-
-
-/* 3 */
-/* body {
-  background: linear-gradient(
-    180deg,
-    #DCEAF4 0%,
-    #FAF7F2 45%,
-    #F3DDE5 100%
-  );
-
-  color: #384152;
-  font-family: system-ui, sans-serif;
-} */
-
-
-
-
-
-/* 4 */
-
-  /* 5,5 */
 html,
 body,
 #root {
@@ -70,21 +24,3 @@ main {
     #F3DDE5 100%
   );
 }
-
-
-
-
-
-/* 5 */
-/* main {
-  background-color: #FAF7F2;
-
-  background-image:
-    linear-gradient(to right, rgba(220,234,244,0.25) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(243,221,229,0.25) 1px, transparent 1px);
-
-  background-size: 80px 80px;
-
-  color: #384152;
-  font-family: system-ui, sans-serif;
-} */

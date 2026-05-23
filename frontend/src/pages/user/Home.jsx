@@ -95,10 +95,6 @@ const filteredProducts = searchProducts(
 
           </div>
 
-          {/* trust line */}
-          <p className="mt-10 text-sm text-[#384152]/50">
-            ✨ Handcrafted • Elegant • Timeless
-          </p>
 
         </div>
       </section>

@@ -1,107 +1,80 @@
-// import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 
-// const CartContext = createContext();
-
-// export function CartProvider({ children }) {
-//   const [cart, setCart] = useState([]);
-
-//   // ADD PRODUCT
-//   const addToCart = (product) => {
-//     const existing = cart.find((item) => item.id === product.id);
-
-//     if (existing) {
-//       setCart(
-//         cart.map((item) =>
-//           item.id === product.id
-//             ? { ...item, quantity: item.quantity + 1 }
-//             : item
-//         )
-//       );
-//     } else {
-//       setCart([...cart, { ...product, quantity: 1 }]);
-//     }
-//   };
-
-//   // REMOVE PRODUCT
-//   const removeFromCart = (id) => {
-//     setCart(cart.filter((item) => item.id !== id));
-//   };
-
-//   // UPDATE QUANTITY
-//   const updateQuantity = (id, quantity) => {
-//     setCart(
-//       cart.map((item) =>
-//         item.id === id ? { ...item, quantity } : item
-//       )
-//     );
-//   };
-
-//   // TOTAL PRICE
-//   const total = cart.reduce(
-//     (sum, item) => sum + item.price * item.quantity,
-//     0
-//   );
-
-//   return (
-//     <CartContext.Provider
-//       value={{
-//         cart,
-//         addToCart,
-//         removeFromCart,
-//         updateQuantity,
-//         total,
-//       }}
-//     >
-//       {children}
-//     </CartContext.Provider>
-//   );
-// }
-
-// // custom hook
-// export const useCart = () => useContext(CartContext);
-
-
-import { createContext, useContext, useState, useEffect } from "react";
-
+// Global cart context
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
 
-  // ✅ LOAD FROM LOCALSTORAGE
+  // Load cart data from localStorage on first render
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
+    const savedCart = localStorage.getItem("cart");
+
+    return savedCart
+      ? JSON.parse(savedCart)
+      : [];
   });
 
-  // ✅ SAVE TO LOCALSTORAGE (every change)
+  // Save cart to localStorage whenever cart changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(cart)
+    );
   }, [cart]);
 
-  // ADD PRODUCT
+  // Add product to cart
   const addToCart = (product) => {
-    const existing = cart.find((item) => item.id === product.id);
 
-    if (existing) {
+    const existingProduct = cart.find(
+      (item) => item.id === product.id
+    );
+
+    // Increase quantity if product already exists
+    if (existingProduct) {
+
       setCart(
         cart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
             : item
         )
       );
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
+
+      return;
     }
+
+    // Add new product
+    setCart([
+      ...cart,
+      {
+        ...product,
+        quantity: 1,
+      },
+    ]);
   };
 
-  // REMOVE PRODUCT
+  // Remove product completely from cart
   const removeFromCart = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
+
+    setCart(
+      cart.filter(
+        (item) => item.id !== id
+      )
+    );
   };
 
-  // UPDATE QUANTITY
+  // Update product quantity
   const updateQuantity = (id, quantity) => {
+
+    // Remove item if quantity becomes invalid
     if (quantity <= 0) {
       removeFromCart(id);
       return;
@@ -109,18 +82,22 @@ export function CartProvider({ children }) {
 
     setCart(
       cart.map((item) =>
-        item.id === id ? { ...item, quantity } : item
+        item.id === id
+          ? { ...item, quantity }
+          : item
       )
     );
   };
 
+  // Clear all cart items
   const clearCart = () => {
     setCart([]);
   };
 
-  // TOTAL PRICE
+  // Calculate total cart price
   const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) =>
+      sum + item.price * item.quantity,
     0
   );
 
@@ -131,8 +108,8 @@ export function CartProvider({ children }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart,
         total,
-        clearCart
       }}
     >
       {children}
@@ -140,5 +117,6 @@ export function CartProvider({ children }) {
   );
 }
 
-// custom hook
-export const useCart = () => useContext(CartContext);
+// Custom hook for cart access
+export const useCart = () =>
+  useContext(CartContext);

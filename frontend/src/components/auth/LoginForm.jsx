@@ -60,16 +60,7 @@ if (from) {
 
   }
 
-}
-    // } else {
-    //   if (data.user.role === "admin") {
-    //     navigate("/admin", { replace: true });
-    //   } else {
-    //     navigate("/", { replace: true });
-    //   }
-    // }
-
-    
+}    
   };
 
   return (

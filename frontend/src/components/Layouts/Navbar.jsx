@@ -5,7 +5,7 @@ import { ShoppingCart } from "lucide-react";
 
 function Navbar() {
   const { user, logout } = useAuth();
-  const { cart } = useCart(); // ✅ FIXED
+  const { cart } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
