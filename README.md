@@ -162,7 +162,7 @@ http://localhost:8000
 ## Configuration de la base de données
 
 1. Créer une base de données MySQL
-2. Importer le fichier SQL fourni (Lien Drive)
+2. Importer le fichier SQL fourni (dans BD/jewelery_shop(1).sql)
 3. Modifier le fichier '.env'
 
 
@@ -182,14 +182,14 @@ DB_PASSWORD=
 
 ### Administrateur
 
-txt
+
 Email : hajarAdmin@test.com
 Mot de passe : ahh27//oGH:nxve33
 
 
 ### Utilisateur (Créer un nouveau utilisateur ou utiliser celui ci)
 
-txt
+
 Email : user@test.com
 Mot de passe : 12345666
 
