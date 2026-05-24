@@ -136,7 +136,7 @@ npm run dev
 
 Le frontend fonctionne sur :
 
-txt
+
 http://localhost:5173
 
 
@@ -153,7 +153,7 @@ php artisan serve
 
 Le backend fonctionne sur :
 
-txt
+
 http://localhost:8000
 (http://127.0.0.1:8000)
 
